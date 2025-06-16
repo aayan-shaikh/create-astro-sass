@@ -51,6 +51,11 @@ export interface Props {
 }
 import "../scss/index.scss";
 
+const nav_links =[
+{name: "Home", href: "/"},
+{name: "About", href: "/about"},
+{name: "Contact", href: "/contact"}
+];
 
 const { title, description = "Built with Astro and SCSS" } = Astro.props;
 ---
@@ -64,9 +69,28 @@ const { title, description = "Built with Astro and SCSS" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Font Awesome for social icons -->
     <link
+      rel="preload"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"
+    ></script>
     <title>{title}</title>
   </head>
   <body>
@@ -79,9 +103,17 @@ const { title, description = "Built with Astro and SCSS" } = Astro.props;
         </a>
 
         <ul class="navbar__menu" id="navMenu">
-          <li><a href="/" class="navbar__menu-link">Home</a></li>
-          <li><a href="/about" class="navbar__menu-link">About</a></li>
-          <li><a href="/contact" class="navbar__menu-link">Contact</a></li>
+          {
+            nav_links.map((link) => {
+              return (
+                <li>
+                  <a class="navbar__menu-link" href={link.href}>
+                    {link.name}
+                  </a>
+                </li>
+              );
+            })
+          }
         </ul>
 
         <div class="navbar__cta">
@@ -117,9 +149,17 @@ const { title, description = "Built with Astro and SCSS" } = Astro.props;
         <div class="footer__column">
           <h3>Quick Links</h3>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
+            {
+              nav_links.map((link) => {
+                return (
+                  <li>
+                    <a class="" href={link.href}>
+                      {link.name}
+                    </a>
+                  </li>
+                );
+              })
+            }
           </ul>
         </div>
         <div class="footer__column">
@@ -365,9 +405,9 @@ $h1-min-size: 3.0;
 $h1-max-size: 5.0;
 $h2-min-size: 2.0;
 $h2-max-size: 4.0;
-$h3-min-size: 3.0;
+$h3-min-size: 1.5;
 $h3-max-size: 3.5;
-$h4-min-size: 2.0;
+$h4-min-size: 1.0;
 $h4-max-size: 3.0;
 
 // Select the min and max font-sizes for body text types
@@ -455,26 +495,33 @@ $small-font-size: clamp($small-min, $small-mid, $small-max);
 $large-font-size: clamp($large-min, $large-mid, $large-max);
 $lead-font-size: clamp($lead-min, $lead-mid, $lead-max);
 
-
 h1 {
   font-size: $h1-font-size;
+  font-family: "Inter", sans-serif;
 }
 
 h2 {
   font-size: $h2-font-size;
+  font-family: "Inter", sans-serif;
+
 }
 
 h3 {
   font-size: $h3-font-size;
+  font-family: "Inter", sans-serif;
+
 }
 
 h4 {
   font-size: $h4-font-size;
+  font-family: "Inter", sans-serif;
+
 }
 
 body,
 p {
   font-size: $body-font-size;
+  font-family: "Fira Sans";
 }
 
 .text-small,
@@ -1162,6 +1209,56 @@ $primary-light: lighten($primary, 2%);
 }`,
   indexPageScss: `@forward "base-page";
 @forward "home";`,
+  splitText: `// src/scripts/gsap-splittext.js
+import { gsap } from "gsap";
+import SplitText from "gsap/SplitText";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(SplitText, ScrollTrigger);
+
+function animateAllTextElements() {
+    document.fonts.ready.then(() => {
+        const selectors = [
+            "h1", "h2", "h3", "h4", "h5", "h6", "p",
+        ];
+        const elements = document.querySelectorAll(selectors.join(","));
+
+        elements.forEach((el) => {
+            gsap.set(el, { opacity: 1 });
+
+            // Split the text into lines
+            const split = SplitText.create(el, {
+                type: "lines",
+                linesClass: "line",
+                autoSplit: true,
+                mask: "lines",
+            });
+
+            // Animate lines when element comes into view
+            gsap.from(split.lines, {
+                scrollTrigger: {
+                    trigger: el,
+
+                    toggleActions: "play none none none",
+                    once: true, // animate only once
+                },
+                duration: 1.2, // slower animation
+                yPercent: 100,
+                opacity: 0,
+                stagger: 0.15, // slower stagger
+                ease: "back",
+                clearProps: "all", // clean up after animation
+            });
+        });
+    });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", animateAllTextElements);
+} else {
+    animateAllTextElements();
+}
+`,
 };
 
 function createFile(filePath, content) {
@@ -1217,7 +1314,12 @@ function createTemplate(projectName = 'astro-scss-app') {
   createFile('src/scss/components/_footer.scss', templates.footer);
   createFile('src/scss/components/_buttons.scss', templates.buttons);
 
+  // Create Animation File
+  createFile('src/scripts/gsap-splittext.js', templates.splitText);
+
+
   // Public files
+
   createFile('public/favicon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#D4A574" d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/></svg>');
 
   console.log('✅ Template created successfully!');
