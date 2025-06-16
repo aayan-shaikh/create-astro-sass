@@ -4,36 +4,36 @@ const fs = require('fs');
 const path = require('path');
 
 const templates = {
-    // Package.json
-    packageJson: (projectName) => ({
-        name: projectName,
-        type: "module",
-        version: "0.0.1",
-        scripts: {
-            dev: "astro dev",
-            start: "astro dev --host",
-            build: "astro build",
-            preview: "astro build & astro preview --host"
-        },
-        dependencies: {
-            astro: "^5.9.1",
-            sass: "^1.89.1"
-        },
-        devDependencies: {
+  // Package.json
+  packageJson: (projectName) => ({
+    name: projectName,
+    type: "module",
+    version: "0.0.1",
+    scripts: {
+      dev: "astro dev",
+      start: "astro dev --host",
+      build: "astro build",
+      preview: "astro build & astro preview --host"
+    },
+    dependencies: {
+      astro: "^5.9.1",
+      sass: "^1.89.1"
+    },
+    devDependencies: {
 
-        }
-    }),
+    }
+  }),
 
-    // Astro config
-    astroConfig: `import { defineConfig } from 'astro/config';
+  // Astro config
+  astroConfig: `import { defineConfig } from 'astro/config';
     
     
     export default defineConfig({
       base: "/",
     });`,
 
-    // Netlify config
-    netlifyToml: `[build]
+  // Netlify config
+  netlifyToml: `[build]
   command = "npm run build"
   publish = "dist"
 
@@ -43,8 +43,8 @@ const templates = {
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"`,
 
-    // Base Layout
-    baseLayout: `---
+  // Base Layout
+  baseLayout: `---
 export interface Props {
   title: string;
   description?: string;
@@ -194,8 +194,8 @@ const { title, description = "Built with Astro and SCSS" } = Astro.props;
 </html>
 `,
 
-    // Index page
-    indexPage: `---
+  // Index page
+  indexPage: `---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../scss/pages/_home.scss";
 ---
@@ -313,15 +313,15 @@ import "../scss/pages/_home.scss";
 </BaseLayout>
 `,
 
-    // SCSS Files
-    indexScss: `@use 'variables/' as *;
+  // SCSS Files
+  indexScss: `@use 'variables/' as *;
 @use 'base/' as *;
 @use 'components/' as *;`,
 
-    variablesIndex: `@forward 'variables';
+  variablesIndex: `@forward 'variables';
 @forward 'colors';`,
 
-    variables: `// Typography
+  variables: `// Typography
 $font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 $font-weight-normal: 400;
 $font-weight-medium: 500;
@@ -330,16 +330,16 @@ $font-weight-bold: 700;
 $border-radius: 5px;
 `,
 
-    colors: `$primary: #34856f;
+  colors: `$primary: #34856f;
 $secondary: #0e241f;
 $accent: #e44c59;
 $text-primary: #fffce5;
 $text-secondary: darken($text-primary, 5%);`,
 
-    baseIndex: `@forward 'reset';
+  baseIndex: `@forward 'reset';
 @forward 'typography';`,
 
-    reset: `*, *::before, *::after {
+  reset: `*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -355,7 +355,7 @@ body {
   color: #2D2D2D;
 }`,
 
-    typography: `// ===== FONT SCALING =====
+  typography: `// ===== FONT SCALING =====
 // Select the min and max screen sizes you are working with
 $screen-min-width: 30;
 $screen-max-width: 120;
@@ -490,9 +490,9 @@ small {
   font-size: $lead-font-size;
 }`,
 
-    componentsIndex: `@forward 'navbar';
+  componentsIndex: `@forward 'navbar';
 @forward 'footer'; @forward 'buttons';`,
-    buttons: `@use "../base/" as *;
+  buttons: `@use "../base/" as *;
 @use "../variables/" as *;
 
 // Simple button mixin with sensible defaults
@@ -512,6 +512,7 @@ small {
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 600;
+    font-size:inherit;
 
 
     @if $shadow {
@@ -593,7 +594,7 @@ button {
     @include button($color: black);
 }`,
 
-    navbar: `@use '../variables/' as *;
+  navbar: `@use '../variables/' as *;
 @use './buttons' as *;
 // Navbar variables
 $nav-primary: $primary;
@@ -725,7 +726,7 @@ $nav-text: $text-primary;
 
   &.scrolled {
     background-color: rgba(darken($primary, 5%), 0.98);
-    padding: 0.5rem 0;
+    padding: 0.2rem 0;
 
     .navbar__logo {
       font-size: 1.6rem;
@@ -794,7 +795,7 @@ $nav-text: $text-primary;
   }
 }`,
 
-    footer: `@use '../variables/' as *;
+  footer: `@use '../variables/' as *;
 
 .footer {
   background: linear-gradient(135deg, $primary 0%, lighten($primary, 2%) 100%);
@@ -1027,10 +1028,10 @@ $nav-text: $text-primary;
     }
   }
 }`,
-    basePage: `main {
+  basePage: `main {
     padding-top: 8rem;
 }`,
-    homePage: `@use "../variables/" as *;
+  homePage: `@use "../variables/" as *;
 
 
 main {
@@ -1159,108 +1160,108 @@ $primary-light: lighten($primary, 2%);
         font-size: 1.5rem;
     }
 }`,
-    indexPageScss: `@forward "base-page";
+  indexPageScss: `@forward "base-page";
 @forward "home";`,
 };
 
 function createFile(filePath, content) {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(filePath, content);
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(filePath, content);
 }
 
 function createTemplate(projectName = 'astro-scss-app') {
-    console.log(`🚀 Creating Astro + SCSS template: ${projectName}`);
+  console.log(`🚀 Creating Astro + SCSS template: ${projectName}`);
 
-    // Create directory structure
-    const dirs = [
-        'src/layouts',
-        'src/pages',
-        'src/scss/pages',
-        'src/scss/variables',
-        'src/scss/base',
-        'src/scss/components',
-        'public'
-    ];
+  // Create directory structure
+  const dirs = [
+    'src/layouts',
+    'src/pages',
+    'src/scss/pages',
+    'src/scss/variables',
+    'src/scss/base',
+    'src/scss/components',
+    'public'
+  ];
 
-    dirs.forEach(dir => {
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-    });
+  dirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  });
 
-    // Create files
-    createFile('package.json', JSON.stringify(templates.packageJson(projectName), null, 2));
-    createFile('astro.config.mjs', templates.astroConfig);
-    createFile('netlify.toml', templates.netlifyToml);
+  // Create files
+  createFile('package.json', JSON.stringify(templates.packageJson(projectName), null, 2));
+  createFile('astro.config.mjs', templates.astroConfig);
+  createFile('netlify.toml', templates.netlifyToml);
 
-    // Astro files
-    createFile('src/layouts/BaseLayout.astro', templates.baseLayout);
-    createFile('src/pages/index.astro', templates.indexPage);
+  // Astro files
+  createFile('src/layouts/BaseLayout.astro', templates.baseLayout);
+  createFile('src/pages/index.astro', templates.indexPage);
 
-    // SCSS files
-    createFile('src/scss/index.scss', templates.indexScss);
-    createFile('src/scss/pages/_base-page.scss', templates.basePage);
-    createFile('src/scss/pages/_home.scss', templates.homePage);
-    createFile('src/scss/pages/_index.scss', templates.indexPageScss);
-    createFile('src/scss/variables/_index.scss', templates.variablesIndex);
-    createFile('src/scss/variables/_variables.scss', templates.variables);
-    createFile('src/scss/variables/_colors.scss', templates.colors);
-    createFile('src/scss/base/_index.scss', templates.baseIndex);
-    createFile('src/scss/base/_reset.scss', templates.reset);
-    createFile('src/scss/base/_typography.scss', templates.typography);
-    createFile('src/scss/components/_index.scss', templates.componentsIndex);
-    createFile('src/scss/components/_navbar.scss', templates.navbar);
-    createFile('src/scss/components/_footer.scss', templates.footer);
-    createFile('src/scss/components/_buttons.scss', templates.buttons);
+  // SCSS files
+  createFile('src/scss/index.scss', templates.indexScss);
+  createFile('src/scss/pages/_base-page.scss', templates.basePage);
+  createFile('src/scss/pages/_home.scss', templates.homePage);
+  createFile('src/scss/pages/_index.scss', templates.indexPageScss);
+  createFile('src/scss/variables/_index.scss', templates.variablesIndex);
+  createFile('src/scss/variables/_variables.scss', templates.variables);
+  createFile('src/scss/variables/_colors.scss', templates.colors);
+  createFile('src/scss/base/_index.scss', templates.baseIndex);
+  createFile('src/scss/base/_reset.scss', templates.reset);
+  createFile('src/scss/base/_typography.scss', templates.typography);
+  createFile('src/scss/components/_index.scss', templates.componentsIndex);
+  createFile('src/scss/components/_navbar.scss', templates.navbar);
+  createFile('src/scss/components/_footer.scss', templates.footer);
+  createFile('src/scss/components/_buttons.scss', templates.buttons);
 
-    // Public files
-    createFile('public/favicon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#D4A574" d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/></svg>');
+  // Public files
+  createFile('public/favicon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#D4A574" d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/></svg>');
 
-    console.log('✅ Template created successfully!');
-    console.log('\n📝 Next steps:');
-    console.log(`   cd ${projectName}`);
-    console.log('   npm install');
-    console.log('   npm run dev');
-    console.log('\n 🌐 Deploy to Netlify:');
-    console.log('   npm run build');
-    console.log('   Deploy the dist/ folder\n');
-    console.log('   Made with ❤️  by Aayan\n');
+  console.log('✅ Template created successfully!');
+  console.log('\n📝 Next steps:');
+  console.log(`   cd ${projectName}`);
+  console.log('   npm install');
+  console.log('   npm run dev');
+  console.log('\n 🌐 Deploy to Netlify:');
+  console.log('   npm run build');
+  console.log('   Deploy the dist/ folder\n');
+  console.log('   Made with ❤️  by Aayan\n');
 }
 
 // CLI handling
 function main() {
-    const args = process.argv.slice(2);
-    const projectName = args[0] || 'astro-scss-app';
+  const args = process.argv.slice(2);
+  const projectName = args[0] || 'astro-scss-app';
 
-    // Validate project name
-    if (projectName.startsWith('-')) {
-        console.error('Error: Project name cannot start with a dash');
-        process.exit(1);
-    }
+  // Validate project name
+  if (projectName.startsWith('-')) {
+    console.error('Error: Project name cannot start with a dash');
+    process.exit(1);
+  }
 
-    // Check if directory already exists
-    if (fs.existsSync(projectName)) {
-        console.error(`Error: Directory "${projectName}" already exists`);
-        process.exit(1);
-    }
+  // Check if directory already exists
+  if (fs.existsSync(projectName)) {
+    console.error(`Error: Directory "${projectName}" already exists`);
+    process.exit(1);
+  }
 
-    try {
-        // Create project directory first
-        fs.mkdirSync(projectName);
-        process.chdir(projectName);
+  try {
+    // Create project directory first
+    fs.mkdirSync(projectName);
+    process.chdir(projectName);
 
-        createTemplate(projectName);
-    } catch (err) {
-        console.error('Error creating template:', err.message);
-        process.exit(1);
-    }
+    createTemplate(projectName);
+  } catch (err) {
+    console.error('Error creating template:', err.message);
+    process.exit(1);
+  }
 }
 
 if (require.main === module) {
-    main();
+  main();
 }
 
 module.exports = { createTemplate };
